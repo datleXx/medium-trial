@@ -24,6 +24,7 @@ const PostCard = () => {
                 <div className={styles.authorContainer}>
                     <div className={styles.authorImageContainer}>
                         <Image
+                            alt="postcard"
                             src = {Logo}
                             className={styles.authorImage}
                             width={40}
