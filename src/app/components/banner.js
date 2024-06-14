@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Logo from "../../../public/static/logo.png"; 
+import Logo from "../../../public/static/banner.png"; 
 
 const styles = {
     accentedButton:  'bg-black text-white py-2 px-4 rounded-full', 
@@ -32,3 +32,7 @@ const Banner = () => {
 }
 
 export default Banner;
+
+
+
+// TODO: refactor file, group shared component such as navbar and footer into 1 single file for reusable code

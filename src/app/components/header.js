@@ -37,3 +37,6 @@ const Header = () => {
 }
 
 export default Header
+
+// TODO: refactor file name, convention: "PostCard", we use the .tsx here to enable typescript, remove .js
+// TODO: put className using inline styling, "const styles" might seem tidy but bad practice

@@ -37,3 +37,5 @@ export default async function Home() {
   );
 }
 
+
+//  TODO: read next js file structure, routing file structure, recommended: https://www.youtube.com/watch?v=Vm7qM1wmXwE
