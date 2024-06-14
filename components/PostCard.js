@@ -13,7 +13,7 @@ const styles = {
     articleDetails: `my-2 text-[.8rem]`, 
     category:`bg-[#F2F3F2] p-1 rounded-full`, 
     bookmarkContainer:`cursor-pointer`,
-
+    thumbnailContainer:``, 
     postDetails: `flex flex-col`, 
 }
 
@@ -46,6 +46,7 @@ const PostCard = () => {
             </div>
             <div className={styles.thumbnailContainer}>
                     <Image
+                        alt="good image"
                         src={Logo}
                         height={100}
                         width={100}
