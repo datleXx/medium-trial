@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Logo from "./../static/logo.png"; 
+import Logo from "../../../public/static/logo.png"
 import { FiBookmark } from "react-icons/fi";
 const styles = {
     wrapper:`flex max-width-[46rem] h-[10rem] items-center gap-[1rem] cursor-pointer`,

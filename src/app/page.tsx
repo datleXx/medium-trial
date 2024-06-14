@@ -1,12 +1,10 @@
 import Link from "next/link";
-
-import { CreatePost } from "~/app/_components/create-post";
 import { getServerAuthSession } from "~/server/auth";
 import { api } from "~/trpc/server";
 
-import Header from "components/header";
-import Banner from "components/banner";
-import PostCard from "components/PostCard";
+import Header from "~/app/components/header";
+import Banner from "~/app/components/banner";
+import PostCard from "~/app/components/PostCard";
 
 const styles = {
   postsList: `flex flex-col gap-3 p-2 sm:grid-cols-2 md:gap-6 md:p-6 lg:grid-cols-3`,
@@ -39,21 +37,3 @@ export default async function Home() {
   );
 }
 
-async function CrudShowcase() {
-  const session = await getServerAuthSession();
-  if (!session?.user) return null;
-
-  const latestPost = await api.post.getLatest();
-
-  return (
-    <div className="w-full max-w-xs">
-      {latestPost ? (
-        <p className="truncate">Your most recent post: {latestPost.name}</p>
-      ) : (
-        <p>You have no posts yet.</p>
-      )}
-
-      <CreatePost />
-    </div>
-  );
-}

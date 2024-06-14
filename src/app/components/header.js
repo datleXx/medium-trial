@@ -1,5 +1,5 @@
 import Image from "next/image"
-import Logo from '../static/logo.png'
+import Logo from "../../../public/static/logo.png"
 
 
 const styles = {
