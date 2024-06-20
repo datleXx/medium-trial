@@ -1,20 +1,16 @@
 import Link from "next/link";
 import { getServerAuthSession } from "~/server/auth";
 import { api } from "~/trpc/server";
+import HomePage from "../../components/home/homepage";
 
-import Landing from "../components/landing/landing";
-import HomeHeader from "../components/home/header_home";
-import HomePage from "../components/home/homepage";
-import EmailLogin from "~/components/auth/emailLogin";
-
-export default async function LandingPage() {
+export default async function homePage() {
   const hello = await api.post.hello({ text: "from tRPC" });
   // const session = await getServerAuthSession();
 
 
   return (
     <div>
-      <Landing />
+      <HomePage/>
     </div>
   );
 }
