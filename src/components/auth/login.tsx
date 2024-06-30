@@ -2,7 +2,6 @@ import { Blog } from "~/Context/context";
 import EmailLogin from "./emailLogin";
 import {signIn} from 'next-auth/react'
 
-
 const SignIn = () => {
     const {isSignIn, setIsSignIn, isSignUp, setIsSignUp, emailSignIn, setEmailSignIn} = Blog()
     return (

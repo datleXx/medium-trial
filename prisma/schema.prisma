@@ -16,14 +16,14 @@ datasource db {
 
 model Post {
     id        Int      @id @default(autoincrement())
-    name      String
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-
-    createdBy   User   @relation(fields: [createdById], references: [id])
-    createdById String
-
-    @@index([name])
+    name  String
+    title     String
+    previewTitle    String 
+    previewSubtitle String
+    body      String 
+    previewImage     String
+    topic     String[]
+    createdBy String
 }
 
 // Necessary for Next auth
@@ -66,7 +66,7 @@ model User {
     image         String?
     accounts      Account[]
     sessions      Session[]
-    posts         Post[]
+    posts         Article[]
 }
 
 model VerificationToken {
@@ -75,4 +75,37 @@ model VerificationToken {
     expires    DateTime
 
     @@unique([identifier, token])
+}
+
+model Article {
+    id        Int      @id @default(autoincrement())
+    name  String
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    title     String 
+    previewTitle    String 
+    previewSubtitle String
+    body      String 
+    previewImage     String
+    topics     PostsOnTopics[]
+    createdBy   User   @relation(fields: [createdById], references: [id])
+    createdById String
+
+}
+
+model Topic {
+    id  Int @id @default(autoincrement())
+    name    String 
+    posts   PostsOnTopics[]
+
+    @@unique([name])
+}
+
+model PostsOnTopics {
+    post    Article @relation(fields: [postId], references: [id])
+    postId  Int
+    topic   Topic   @relation(fields: [topicId], references: [id]) 
+    topicId Int
+
+    @@id([postId, topicId])
 }

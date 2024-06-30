@@ -1,5 +1,5 @@
 import HomeLayout from "~/layout/homelayout";
-import Posts from "./posts";
+import {Posts} from "./posts";
 import HomeHeader from "./header_home";
 
 const HomePage = () => {

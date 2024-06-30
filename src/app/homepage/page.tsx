@@ -4,13 +4,13 @@ import { api } from "~/trpc/server";
 import HomePage from "../../components/home/homepage";
 
 export default async function homePage() {
-  const hello = await api.post.hello({ text: "from tRPC" });
   // const session = await getServerAuthSession();
 
 
   return (
     <div>
       <HomePage/>
+      
     </div>
   );
 }
