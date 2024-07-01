@@ -1,47 +1,32 @@
 "use client";
 
-import ReactQuill from "react-quill";
 import "react-quill/dist/quill.bubble.css";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Blog } from "~/Context/context";
 import { useRef } from "react";
 import { LiaTimesSolid } from "react-icons/lia";
 import { InputTags } from "react-bootstrap-tagsinput";
 import "react-bootstrap-tagsinput/dist/index.css";
 import { api } from "~/trpc/react";
-
 import * as actions from "~/actions";
+import dynamic from "next/dynamic";
+
 
 const Write = () => {
+  // Dynamically import ReactQuill with SSR disabled
+  const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
   const [content, setContent] = useState("");
   const { publishState, setPublishState } = Blog();
   const imageref = useRef<HTMLInputElement | null>(null);
   const [url, setUrl] = useState("");
   const [tags, setTags] = useState<string[]>([]);
-
   const handleClick = () => {
     if (imageref.current) {
       imageref.current.click();
     }
   };
 
-//   const createPost = api.write.createPost.useMutation();
-//   const createPostAction = (
-//     content: string,
-//     topics: string[],
-//     previewImage: string,
-//     formData: FormData,
-//   ) => {
-//     createPost.mutateAsync({
-//         content, 
-//         topics, 
-//         previewImage, 
-//         formData
-//     });
-//   };
-
-//   const createPostFormAction = createPostAction.bind(null, content, tags, url)
-  const createPostAction = actions.createPost.bind(null, content, tags, url)
+  const createPostAction = actions.createPost.bind(null, content, tags, url);
 
   return (
     <form action={createPostAction}>
