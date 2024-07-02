@@ -6,8 +6,8 @@ import { CustomizationProps} from "~/Props/props";
 
 
 const DefaultState: CustomizationProps = {
-    publishState: false, 
-    setPublishState: () => false, 
+    publishState: 'default', 
+    setPublishState: () => 'default', 
     isSignIn: false, 
     setIsSignIn: () => false, 
     isSignUp: false, 
@@ -22,7 +22,7 @@ const BlogContext = createContext(DefaultState);
 
 
 const Context = ({children}: ScriptProps) => {
-    const [publishState, setPublishState] = useState(false)
+    const [publishState, setPublishState] = useState('default')
     const [isSignIn, setIsSignIn] = useState(false) 
     const [isSignUp, setIsSignUp] = useState(false)
     const [emailSignIn, setEmailSignIn] = useState(false)

@@ -102,9 +102,9 @@ model Topic {
 }
 
 model PostsOnTopics {
-    post    Article @relation(fields: [postId], references: [id])
+    post    Article @relation(fields: [postId], references: [id], onDelete: Cascade)
     postId  Int
-    topic   Topic   @relation(fields: [topicId], references: [id]) 
+    topic   Topic   @relation(fields: [topicId], references: [id], onDelete: Cascade) 
     topicId Int
 
     @@id([postId, topicId])

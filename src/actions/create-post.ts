@@ -68,6 +68,6 @@ export async function createPost(content:string, topics:string[] , previewImage:
 
     console.log(post);
     
-    redirect('/homepage');
+    redirect(`/posts/${post.id}`);
 
 }

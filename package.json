@@ -30,6 +30,7 @@
     "@trpc/server": "next",
     "framer-motion": "11.2.12",
     "geist": "^1.3.0",
+    "html-react-parser": "^5.1.10",
     "intergalactic": "^15.96.1",
     "next": "^14.2.1",
     "next-auth": "^4.24.7",

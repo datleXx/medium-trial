@@ -7,14 +7,11 @@ import { useRef } from "react";
 import { LiaTimesSolid } from "react-icons/lia";
 import { InputTags } from "react-bootstrap-tagsinput";
 import "react-bootstrap-tagsinput/dist/index.css";
-import { api } from "~/trpc/react";
 import * as actions from "~/actions";
+import ReactQuill from 'react-quill'; 
 import dynamic from "next/dynamic";
 
-
 const Write = () => {
-  // Dynamically import ReactQuill with SSR disabled
-  const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
   const [content, setContent] = useState("");
   const { publishState, setPublishState } = Blog();
   const imageref = useRef<HTMLInputElement | null>(null);
@@ -25,7 +22,9 @@ const Write = () => {
       imageref.current.click();
     }
   };
-
+  const ReactNoSSR = dynamic(() => import('react-quill'), {
+    ssr: false 
+  })
   const createPostAction = actions.createPost.bind(null, content, tags, url);
 
   return (
@@ -38,7 +37,7 @@ const Write = () => {
           name="title"
           id="title"
         />
-        <ReactQuill
+        <ReactNoSSR
           theme="bubble"
           value={content}
           onChange={setContent}
@@ -46,11 +45,11 @@ const Write = () => {
           className="write my-5"
           id="body"
         />
-        <div className={publishState ? "" : "hidden"}>
+        <div className={publishState === "publish" ? "" : "hidden"}>
           <section className="absolute inset-0 z-30 bg-white">
             <div className="my-[2rem]">
               <span className="absolute right-[1rem] top-[3rem] cursor-pointer text-2xl md:right-[5rem]">
-                <LiaTimesSolid onClick={() => setPublishState(false)} />
+                <LiaTimesSolid onClick={() => setPublishState("write")} />
               </span>
               <div className="mt-[8rem] flex flex-col gap-10 md:flex-row">
                 <div className="mx-[6rem] flex-1">

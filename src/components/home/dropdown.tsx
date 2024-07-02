@@ -4,9 +4,11 @@ import {BiSpreadsheet} from "react-icons/bi"
 import {HiOutlineChartBar} from 'react-icons/hi'
 import { signOut, useSession } from "next-auth/react"
 import Link from "next/link"
+import { Blog } from "~/Context/context"
 
 
 const DropDownMenu = () => {
+    const {publishState, setPublishState} = Blog(); 
     const {data:session} = useSession();
     let userId = ''; 
     if (session) {
@@ -21,7 +23,7 @@ const DropDownMenu = () => {
     return (
         <div className="!mt-6 right-1 bg-white p-4">
             <div className="flex flex-col gap-5 items-center border-b">
-                <Link href={`/profile/${userId}`} className="flex items-center gap-8 cursor-pointer">
+                <Link onClick={() => setPublishState('default')} href={`/profile/${userId}`} className="flex items-center gap-8 cursor-pointer">
                     <span className="text-3xl">
                         <LiaUserSolid />
                     </span>

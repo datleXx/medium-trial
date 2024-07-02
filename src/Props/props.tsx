@@ -1,8 +1,8 @@
 import { Dispatch, SetStateAction } from "react"
 
 export type CustomizationProps = {
-    publishState: boolean, 
-    setPublishState: Dispatch<SetStateAction<boolean>>,
+    publishState: string, 
+    setPublishState: Dispatch<SetStateAction<string>>,
     isSignIn: boolean, 
     setIsSignIn: Dispatch<SetStateAction<boolean>>,
     isSignUp: boolean, 

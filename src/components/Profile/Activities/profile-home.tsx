@@ -1,37 +1,14 @@
-'use server'
+import ProfilePostCard from "../postcard/profile-post-card";
+import { api } from "~/trpc/react";
 
-import { getServerAuthSession } from "~/auth";
-import PostCard from "~/components/PostCard";
-import { db } from "~/db";
+const ProfileHome = () => {
+    const { data: authoredPosts } = api.profile.fetchAllAuthoredPosts.useQuery();
 
-const ProfileHome = async () => {
-    const session = await getServerAuthSession(); 
-    let userId; 
-    if (!session || !session.user) {
-        alert('You havent logged in yet ... ')
-    } 
-    else {
-        userId = session.user.id
-    }
-
-    const authoredPosts = await db.article.findMany({
-        where: {
-            createdById: userId
-        },
-        include: {
-            topics: {
-                include: {
-                    topic: true
-                }
-            }
-        }
-    })
-
-    const renderedAuthoredPosts = authoredPosts.map((post) => {
+    const renderedAuthoredPosts = authoredPosts?.map((post) => {
         return (
-            <PostCard 
-            key={post.id} authorName={post.name} previewTitle={post.previewTitle} previewSubtitle={post.previewSubtitle} 
-                    tags={post.topics.map((topic) => topic.topic.name)}            
+            <ProfilePostCard
+            key={post.id} id={post.id} authorName={post.name} previewTitle={post.previewTitle} previewSubtitle={post.previewSubtitle} 
+            tags={post.topics.map((topic) => topic.topic.name)}            
             /> 
         )
     })
