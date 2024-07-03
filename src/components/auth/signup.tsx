@@ -1,6 +1,8 @@
 
 import { Blog } from "~/Context/context";
 import EmailSignUp from "./emailSignup";
+import {signIn} from 'next-auth/react'
+
 const SignUp = () => {
   const {isSignIn, setIsSignIn, isSignUp, setIsSignUp, emailSignUp, setEmailSignUp} = Blog()
     return (
@@ -16,7 +18,7 @@ const SignUp = () => {
                 <div className="flex flex-col justify-center items-center w-full mb-8">
                     <button
                     className="border border-black text-black font-light font-mediumSerif py-2 px-4 rounded-full mb-2 w-[70%]"
-                    //   onClick={() => signIn('google')}
+                      onClick={() => signIn('google')}
                     >
                     Sign up with Google
                     </button>

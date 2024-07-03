@@ -10,6 +10,7 @@ import "react-bootstrap-tagsinput/dist/index.css";
 import * as actions from "~/actions";
 import ReactQuill from 'react-quill'; 
 import dynamic from "next/dynamic";
+import Editor from "./editor";
 
 const Write = () => {
   const [content, setContent] = useState("");
@@ -37,14 +38,7 @@ const Write = () => {
           name="title"
           id="title"
         />
-        <ReactNoSSR
-          theme="bubble"
-          value={content}
-          onChange={setContent}
-          placeholder="Tell Your Story ..."
-          className="write my-5"
-          id="body"
-        />
+        <Editor value={content} onChange={setContent}/>
         <div className={publishState === "publish" ? "" : "hidden"}>
           <section className="absolute inset-0 z-30 bg-white">
             <div className="my-[2rem]">
