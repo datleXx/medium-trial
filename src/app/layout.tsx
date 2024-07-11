@@ -10,7 +10,7 @@ import { SessionProvider } from "next-auth/react";
 import Providers from "./providers";
 import { NextUIProvider } from "@nextui-org/react";
 import { Metadata } from "~/components/meta-data";
-
+import Head from "next/head";
 export default function RootLayout({
   children,
 }: {
@@ -18,7 +18,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${GeistSans.variable}`}>
-      <Metadata title="Medium-clone" description="Trial Project" href="/favicon.ico" />
+      <Metadata
+        title="Medium-clone"
+        description="Trial Project"
+        href="/favicon.ico"
+      />
       <body>
         <TRPCReactProvider>
           <SessionProvider>

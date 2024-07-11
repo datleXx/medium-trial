@@ -3,6 +3,10 @@ import { dashboardRouter } from "./routers/dashboard";
 import { writeRouter } from "./routers/write";
 import { profileRouter } from "./routers/profile";
 import { postRouter } from "./routers/post";
+import { topicRouter } from "./routers/topic";
+import { searchRouter } from "./routers/search";
+import { userRouter } from "./routers/author";
+import { commentRouter } from "./routers/comment";
 /**
  * This is the primary router for your server.
  *
@@ -12,7 +16,11 @@ export const appRouter = createTRPCRouter({
   dashboard: dashboardRouter, 
   write: writeRouter, 
   profile: profileRouter, 
-  post: postRouter
+  post: postRouter, 
+  topic: topicRouter,
+  search: searchRouter, 
+  user: userRouter, 
+  comment: commentRouter
 });
 
 // export type definition of API

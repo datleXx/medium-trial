@@ -20,7 +20,8 @@ export const profileRouter = createTRPCRouter({
                             include: {
                                 topic: true
                             }
-                        }
+                        }, 
+                        createdBy: true
                     }
                 })
                 return authoredPosts

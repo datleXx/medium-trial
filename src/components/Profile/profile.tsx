@@ -23,7 +23,7 @@ const Profile = () => {
             {userName}
           </h2>
         </div>
-        <div className="mb-[3rem] mt-[1rem] flex items-center gap-5 border-b border-gray-300">
+        <div className="mb-[3rem] mt-[1rem] flex items-center gap-5 border-b border-gray-300 ">
           <div className={`py-[0.5rem] "border-b border-gray-500"}`}>
             <button>Home</button>
           </div>

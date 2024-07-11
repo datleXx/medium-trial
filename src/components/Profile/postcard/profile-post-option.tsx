@@ -7,15 +7,20 @@ import { useRouter } from "next/navigation";
 
 interface ProfilePostCardOptionsProps {
   id: number;
+  key: string; 
 }
-const ProfilePostCardOptions = ({ id }: ProfilePostCardOptionsProps) => {
+const ProfilePostCardOptions = ({ id, key }: ProfilePostCardOptionsProps) => {
   const { publishState, setPublishState } = Blog();
   const mutation = api.post.deletePost.useMutation();
   const router = useRouter();
-
+  let s3_key = key
   const handleDelete = async () => {
     try {
-      await mutation.mutateAsync({ id });
+      if (!s3_key) {
+        s3_key= ""
+      }
+      await mutation.mutateAsync({ id, key:s3_key });
+
       router.push("/homepage");
       // Optionally handle success, e.g., show a success message or update UI
     } catch (error) {

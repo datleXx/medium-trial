@@ -15,15 +15,15 @@ datasource db {
 }
 
 model Post {
-    id        Int      @id @default(autoincrement())
-    name  String
-    title     String
-    previewTitle    String 
+    id              Int      @id @default(autoincrement())
+    name            String
+    title           String
+    previewTitle    String
     previewSubtitle String
-    body      String 
-    previewImage     String
-    topic     String[]
-    createdBy String
+    body            String
+    previewImage    String
+    topic           String[]
+    createdBy       String
 }
 
 // Necessary for Next auth
@@ -57,9 +57,9 @@ model Session {
 model User {
     id            String    @id @default(cuid())
     username      String?   @unique
-    password      String? 
+    password      String?
     createdAt     DateTime  @default(now())
-    updatedAt     DateTime  @updatedAt 
+    updatedAt     DateTime  @updatedAt
     name          String?
     email         String?   @unique
     emailVerified DateTime?
@@ -67,6 +67,7 @@ model User {
     accounts      Account[]
     sessions      Session[]
     posts         Article[]
+    comments      Comment[]
 }
 
 model VerificationToken {
@@ -78,25 +79,26 @@ model VerificationToken {
 }
 
 model Article {
-    id        Int      @id @default(autoincrement())
-    name  String
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-    title     String 
-    previewTitle    String 
+    id              Int             @id @default(autoincrement())
+    name            String
+    createdAt       DateTime        @default(now())
+    updatedAt       DateTime        @updatedAt
+    title           String
+    previewTitle    String
     previewSubtitle String
-    body      String 
-    previewImage     String
-    topics     PostsOnTopics[]
-    createdBy   User   @relation(fields: [createdById], references: [id])
-    createdById String
-
+    body            String
+    previewImage    String
+    key             String
+    topics          PostsOnTopics[]
+    createdBy       User            @relation(fields: [createdById], references: [id])
+    createdById     String
+    comments        Comment[]
 }
 
 model Topic {
-    id  Int @id @default(autoincrement())
-    name    String 
-    posts   PostsOnTopics[]
+    id    Int             @id @default(autoincrement())
+    name  String
+    posts PostsOnTopics[]
 
     @@unique([name])
 }
@@ -104,8 +106,19 @@ model Topic {
 model PostsOnTopics {
     post    Article @relation(fields: [postId], references: [id], onDelete: Cascade)
     postId  Int
-    topic   Topic   @relation(fields: [topicId], references: [id], onDelete: Cascade) 
+    topic   Topic   @relation(fields: [topicId], references: [id], onDelete: Cascade)
     topicId Int
 
     @@id([postId, topicId])
+}
+
+model Comment {
+    id        Int      @id @default(autoincrement())
+    text      String
+    createdAt DateTime @default(now())
+    postId    Int
+    userId    String
+
+    post Article @relation(fields: [postId], references: [id])
+    user User    @relation(fields: [userId], references: [id])
 }

@@ -4,7 +4,6 @@ import "react-quill/dist/quill.bubble.css";
 import { useState, useEffect } from "react";
 import "react-bootstrap-tagsinput/dist/index.css";
 import ReactQuill from "react-quill";
-import parse from "html-react-parser";
 import { api } from "~/trpc/react";
 import { useRouter, usePathname } from "next/navigation";
 import Logo from "public/static/logo.png";
