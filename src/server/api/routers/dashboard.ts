@@ -18,7 +18,8 @@ export const dashboardRouter = createTRPCRouter({
                                 topic: true
                             }   
                         }, 
-                        createdBy: true
+                        createdBy: true, 
+                        comments: true
                     }
                 });
                 return allPosts;  
@@ -62,7 +63,8 @@ export const dashboardRouter = createTRPCRouter({
                             topic: true
                         }
                     }, 
-                    createdBy: true
+                    createdBy: true, 
+                    comments: true
                 }
             })
 

@@ -93,6 +93,7 @@ model Article {
     createdBy       User            @relation(fields: [createdById], references: [id])
     createdById     String
     comments        Comment[]
+    like            Int             @default(0)
 }
 
 model Topic {
@@ -122,3 +123,5 @@ model Comment {
     post Article @relation(fields: [postId], references: [id])
     user User    @relation(fields: [userId], references: [id])
 }
+
+

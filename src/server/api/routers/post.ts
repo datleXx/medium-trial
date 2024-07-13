@@ -223,6 +223,7 @@ export const postRouter = createTRPCRouter({
               },
             },
             createdBy: true,
+            comments: true
           },
         });
 
@@ -306,4 +307,28 @@ export const postRouter = createTRPCRouter({
         console.log(e); 
       }
     }),
+
+    updateLike: protectedProcedure
+    .input(
+      z.object({
+        id: z.number(), 
+        like: z.number()
+      })
+    )
+    .mutation(async ({ctx, input}) => {
+      try {
+        await ctx.db.article.update({
+          where: {
+            id: input.id
+          }, 
+          data: {
+            like: input.like
+          }
+        })
+        revalidatePath("/homepage");
+      }
+      catch (e) {
+        console.log(e)
+      }
+    })
 });

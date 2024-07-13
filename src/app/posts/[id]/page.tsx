@@ -33,22 +33,22 @@ export default function PostShowPage(props: PostShowPageProps) {
   const id = parseInt(props.params.id);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [isResponseTabOpen, setIsResponseTabOpen] = useState(false);
+  const [clap, setClap] = useState<number>(0); 
+  const [numComment, setNumComment] = useState<number>(0);
+
+
 
   const openResponseTab = () => setIsResponseTabOpen(true);
   const closeResponseTab = () => setIsResponseTabOpen(false);
 
   // Use the query hook to fetch the post data
-  const {
-    data: post,
-    isLoading,
-    isError,
-  } = api.post.fetchOnePost.useQuery({ id });
-  // Use the mutation hook to get the image URL
-  const { mutateAsync } = api.post.downloadFile.useMutation();
-
+  const { data: post, isLoading, isError } = api.post.fetchOnePost.useQuery({ id });
   const dateString = String(post?.createdAt);
   const dateParts = dateString.split(" ");
   const monthDay = `${dateParts[1]} ${dateParts[2]},${dateParts[3]}`;
+  // Use the mutation hook to get the image URL
+  const { mutateAsync } = api.post.downloadFile.useMutation();
+  const mutationLike = api.post.updateLike.useMutation();
 
   useEffect(() => {
     const fetchImageUrl = async () => {
@@ -65,17 +65,32 @@ export default function PostShowPage(props: PostShowPageProps) {
     };
 
     if (post) {
-      // Using void to explicitly ignore the returned promise
+      setNumComment(post.comments.length);
+      setClap(post.like ?? 0); // Ensure clap is initialized correctly
       void fetchImageUrl();
     }
   }, [post, mutateAsync]);
+
+  const handleClapClick = async () => {
+    if (post) {
+      const newClapCount = clap + 1;
+      setClap(newClapCount); // Update UI immediately
+
+      try {
+        await mutationLike.mutateAsync({ id: post.id, like: newClapCount });
+      } catch (e) {
+        console.log(e);
+        // If there is an error, revert the clap count
+        setClap(clap);
+      }
+    }
+  };
 
   if (isLoading) {
     return (
       <>
         <HomeHeader />
         <div className="relative top-[3.3rem]">
-          {/* Gradient membership advertising bar */}
           <div className="flex h-[4rem] items-center bg-gradient-to-r from-yellow-100 to-yellow-300 py-2 text-black">
             <div className="container mx-auto text-center">
               <span>Be part of a better internet. </span>
@@ -99,7 +114,6 @@ export default function PostShowPage(props: PostShowPageProps) {
     <>
       <HomeHeader />
       <div className="relative top-[3.3rem]">
-        {/* Gradient membership advertising bar */}
         <div className="flex h-[4rem] items-center bg-gradient-to-r from-yellow-100 to-yellow-300 py-2 text-black">
           <div className="container mx-auto text-center">
             <span>Be part of a better internet. </span>
@@ -133,21 +147,22 @@ export default function PostShowPage(props: PostShowPageProps) {
           <div className="flex items-center justify-between border-b border-t py-3">
             <div className="flex gap-6">
               <div
-                className="flex items-center gap-1"
+                className="flex items-center gap-1 cursor-pointer"
                 data-tooltip-id="blog-tooltip"
-                data-tooltip-content="1k"
+                data-tooltip-content="Clap"
+                onClick={handleClapClick}
               >
                 <PiHandsClappingThin size={20} />
-                <span>1k</span>
+                <span>{clap}</span>
               </div>
               <div
                 className="flex cursor-pointer items-center gap-1"
                 data-tooltip-id="blog-tooltip"
-                data-tooltip-content="1k"
+                data-tooltip-content="Respond"
                 onClick={openResponseTab}
               >
                 <BiMessageRounded size={20} />
-                <span>1k</span>
+                <span>{numComment}</span>
               </div>
             </div>
             <div className="flex gap-6">

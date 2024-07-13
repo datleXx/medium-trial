@@ -35,6 +35,8 @@ const TopicShowPage = (props: TopicShowPageProps) => {
           }
           image_link={article.key ?? ""}
           createdAt={article.createdAt}
+          like={article.like ?? 0}
+          numComment={article.comments.length}
         />
       </Link>
     );

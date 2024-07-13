@@ -129,7 +129,7 @@ const ResponseTab: React.FC<ResponseTabProps> = ({
         } overflow-y-auto`} // Add overflow-y-auto for scrolling
       >
         <div className="flex justify-between border-b p-4">
-          <h2 className="text-lg font-semibold">Responses</h2>
+          <h2 className="text-lg font-semibold">Responses {`(${commentsState.length})`}</h2>
           <button onClick={onClose} className="text-lg font-semibold">
             ×
           </button>

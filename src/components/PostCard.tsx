@@ -17,6 +17,8 @@ interface PostCardProps {
   userImage: string;
   image_link: string;
   createdAt: Date;
+  like: number, 
+  numComment: number
 }
 
 const PostCard = ({
@@ -27,6 +29,8 @@ const PostCard = ({
   userImage,
   image_link,
   createdAt,
+  like, 
+  numComment
 }: PostCardProps) => {
   const dateString = String(createdAt);
   const dateParts = dateString.split(" ");
@@ -88,18 +92,18 @@ const PostCard = ({
             <div
               className="flex items-center gap-1"
               data-tooltip-id="claps-tooltip"
-              data-tooltip-content="19.6K claps"
+              data-tooltip-content={`${like} claps`}
             >
               <FaHandsClapping size={20} />
-              <div>1k</div>
+              <div>{like}</div>
             </div>
             <div
               className="flex items-center gap-1"
               data-tooltip-id="comments-tooltip"
-              data-tooltip-content="212 comments"
+              data-tooltip-content={`${numComment} Comments` }
             >
               <BiSolidMessageRounded size={20} />
-              <div>1k</div>
+              <div>{numComment}</div>
             </div>
           </div>
           <div className="flex gap-3">

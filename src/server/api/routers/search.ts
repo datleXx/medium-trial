@@ -32,6 +32,7 @@ export const searchRouter = createTRPCRouter({
               },
             },
             createdBy: true,
+            comments: true
           },
         });
         return searchedPosts
