@@ -21,6 +21,7 @@ import PopoverTriggerWrapper from "~/components/home/popover-wrapper";
 import ResponseTab from "~/components/post/response";
 import AuthorInfo from "~/components/post/author-other-posts";
 import Footer from "~/components/landing/footer";
+import PostContentSkeleton from "~/components/post/post-content-skeleton";
 
 interface PostShowPageProps {
   params: {
@@ -49,7 +50,6 @@ export default function PostShowPage(props: PostShowPageProps) {
   const dateParts = dateString.split(" ");
   const monthDay = `${dateParts[1]} ${dateParts[2]},${dateParts[3]}`;
 
-
   useEffect(() => {
     const fetchImageUrl = async () => {
       if (post && post.key) {
@@ -63,7 +63,7 @@ export default function PostShowPage(props: PostShowPageProps) {
         }
       }
     };
-  
+
     if (post) {
       // Using void to explicitly ignore the returned promise
       void fetchImageUrl();
@@ -71,7 +71,23 @@ export default function PostShowPage(props: PostShowPageProps) {
   }, [post, mutateAsync]);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <>
+        <HomeHeader />
+        <div className="relative top-[3.3rem]">
+          {/* Gradient membership advertising bar */}
+          <div className="flex h-[4rem] items-center bg-gradient-to-r from-yellow-100 to-yellow-300 py-2 text-black">
+            <div className="container mx-auto text-center">
+              <span>Be part of a better internet. </span>
+              <a href="#" className="font-semibold underline">
+                Get 20% off membership for a limited time
+              </a>
+            </div>
+          </div>
+          <PostContentSkeleton />
+        </div>
+      </>
+    );
   }
 
   if (isError || !post) {
@@ -180,14 +196,13 @@ export default function PostShowPage(props: PostShowPageProps) {
 
         <Tooltip id="blog-tooltip" />
       </div>
-      <AuthorInfo authorId={post.createdById}/> 
+      <AuthorInfo authorId={post.createdById} />
       <ResponseTab
         isOpen={isResponseTabOpen}
         onClose={closeResponseTab}
         userName={post.createdBy.username ?? post.createdBy.name ?? "You"}
         postId={post.id}
         userId={post.createdBy.id}
-
       />
       <Footer />
     </>

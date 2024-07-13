@@ -5,16 +5,19 @@ import PostCard from "../PostCard";
 import { db } from "~/db";
 import Image from "next/image";
 import { api } from "~/trpc/react";
-import PostSkeleton from "./post-skeleton";
+import PostSkeleton from "../post/post-skeleton";
 import TopicBar from "./topic_scroll";
 import { useState } from "react";
+import TopicSkeletion from "../post/topic-skeleton";
+import StaffPickSkeleton from "../post/staff-pick-skeleton";
+import DashboardLoading from "../post/dashboard-loading";
 
 export function Posts() {
   const { data: allPosts, isLoading } = api.dashboard.fetchAllPosts.useQuery();
   const [tag, setTag] = useState("");
   const staffPickedPosts = allPosts?.slice(0, 3);
   const renderedPosts = allPosts?.map((article) => {
-    console.log(new Date(article.createdAt).toLocaleString())
+    console.log(new Date(article.createdAt).toLocaleString());
     return (
       <Link key={article.id} href={"/posts/" + article.id}>
         <PostCard
@@ -33,7 +36,6 @@ export function Posts() {
       </Link>
     );
   });
-
 
   const { data: recommendedTopic } = api.dashboard.fetchAllTopics.useQuery();
   const renderedRecommendedTopics = recommendedTopic?.map((topic) => {
@@ -74,18 +76,8 @@ export function Posts() {
 
   if (isLoading) {
     return (
-      <div className="mx-6 my-5 p-4">
-        <div className="flex flex-1">
-          <div className="flex w-[70%] flex-col gap-4 border-r-small">
-            <div className="mx-5">
-              {[...Array<number>(5)].map((_, index) => (
-                <PostSkeleton key={index} />
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+      <DashboardLoading /> 
+    ); 
   }
 
   return (
@@ -106,7 +98,7 @@ export function Posts() {
           <div className="flex w-full justify-between">
             {/* Left div */}
             <div className="mx-auto my-5 flex w-full flex-col gap-7 p-3 md:w-[58%]">
-              <TopicBar hover="For you"/>
+              <TopicBar hover="For you" />
               <div className="flex flex-col gap-3">{renderedPosts}</div>
             </div>
             {/* Right div */}

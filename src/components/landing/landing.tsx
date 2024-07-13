@@ -15,7 +15,7 @@ const Landing = () => {
     const router = useRouter();
     if (status === 'unauthenticated' || status === 'loading') {
         return (
-            <>
+            <div className="min-h-screen">
                 <Header />
                 <Banner />
                 <Footer />
@@ -25,7 +25,7 @@ const Landing = () => {
                 <div className={!isSignIn? "hidden" : ""}>
                     <SignIn/>
                 </div>
-            </>
+            </div>
         )
     }
     else {

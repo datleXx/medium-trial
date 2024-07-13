@@ -6,8 +6,9 @@ import { useState } from "react";
 import { api } from "~/trpc/react";
 import PostCard from "~/components/PostCard";
 import Image from "next/image";
-import PostSkeleton from "~/components/home/post-skeleton";
+import PostSkeleton from "~/components/post/post-skeleton";
 import TopicBar from "~/components/home/topic_scroll";
+import DashboardLoading from "~/components/post/dashboard-loading";
 
 interface TopicShowPageProps {
   params: {
@@ -78,17 +79,7 @@ const TopicShowPage = (props: TopicShowPageProps) => {
 
   if (isLoading) {
     return (
-      <div className="mx-6 my-5 p-4">
-        <div className="flex flex-1">
-          <div className="flex w-[70%] flex-col gap-4 border-r-small">
-            <div className="mx-5">
-              {[...Array<number>(5)].map((_, index) => (
-                <PostSkeleton key={index} />
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
+      <DashboardLoading /> 
     );
   }
   return (
