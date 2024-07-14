@@ -1,20 +1,43 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import ProfileHome from "./Activities/profile-home";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
+import ProfileEditModal from "./profile-edit";
+import { api } from "~/trpc/react";
 
-const Profile = () => {
+const Profile: React.FC = () => {
   const session = useSession();
-  let userName;
-  let userId;
-  let userImage;
-  if (!session || !session.data?.user) {
-  } else {
-    userName = session.data.user.name;
-    userId = session.data.user.id;
-    userImage = session.data.user.image;
-  }
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [userImg, setUserImg] = useState('');
+
+  const userId = session.data?.user.id ?? "";
+  const userImage =
+    session.data?.user.image ??
+    "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg";
+  const { data: user } = api.user.fetchUser.useQuery({ id: userId });
+  const { mutateAsync } = api.user.downloadFile.useMutation();
+  const userName = user?.username ?? user?.name ?? "";
+
+  const handleEditProfile = () => {
+    setModalVisible(true);
+  };
+  useEffect(() => {
+    const fetchImage = async () => {
+      if (user?.image_key) {
+        console.log(user.image_key);
+        const img = await mutateAsync({ key: user.image_key });
+        console.log(img);
+        if (img) {
+          setUserImg(img.link);
+        }
+      }
+    };
+  
+    void fetchImage();
+  }, [user, mutateAsync]);
+
   return (
     <div>
       <div className="relative top-[3.3rem]">
@@ -56,14 +79,17 @@ const Profile = () => {
                       width={100}
                       height={100}
                       src={
-                        userImage ??
+                        userImg ?? userImage ??
                         "https://static.vecteezy.com/system/resources/previews/001/840/618/original/picture-profile-icon-male-icon-human-or-people-sign-and-symbol-free-vector.jpg"
                       }
                     />
                     <h1 className="text-md font-sans font-medium">
                       {userName}
                     </h1>
-                    <button className="text-sm text-green-600 hover:text-green-700">
+                    <button
+                      onClick={handleEditProfile}
+                      className="text-sm text-green-600 hover:text-green-700"
+                    >
                       Edit Profile
                     </button>
                   </div>
@@ -73,38 +99,11 @@ const Profile = () => {
           </div>
         </div>
       </div>
-      {/* <section className="relative flex gap-[4rem]">
-        <div className="mx-[9rem] mt-[9rem] flex-[2]">
-          <div className="flex items-center gap-4">
-            <h2 className="text-3xl font-bold capitalize sm:text-5xl">
-              {userName}
-            </h2>
-          </div>
-          <div className="mb-[3rem] mt-[1rem] flex items-center gap-5 border-b border-gray-300 ">
-            <div className={`"border-b border-gray-500"} py-[0.5rem]`}>
-              <button>Home</button>
-            </div>
-          </div>
-          <ProfileHome />
-        </div>
-
-        <div className="z-10 flex-[1] border-l border-gray-300 p-[2rem]">
-          <Image
-            src={
-              session?.data?.user?.image ??
-              "https://static.vecteezy.com/system/resources/previews/001/840/618/original/picture-profile-icon-male-icon-human-or-people-sign-and-symbol-free-vector.jpg"
-            }
-            alt="user image"
-            width={80}
-            height={80}
-            className="rounded-full"
-          />
-          <h2 className="mt-3 font-semibold">{userName}</h2>
-          <button className="mt-5 text-sm text-green-600 hover:text-green-700">
-            Edit this Profile
-          </button>
-        </div>
-      </section> */}
+      <ProfileEditModal
+        isVisible={isModalVisible}
+        onClose={() => setModalVisible(false)}
+        id={userId ?? ""}
+      />
     </div>
   );
 };

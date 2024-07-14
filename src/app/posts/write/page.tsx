@@ -13,7 +13,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import DropDownMenu from "~/components/home/dropdown";
-import { Popover, PopoverTrigger, PopoverContent, Avatar } from "@nextui-org/react";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  Avatar,
+} from "@nextui-org/react";
 import { useSession } from "next-auth/react";
 
 // Dynamic import of Editor component
@@ -46,15 +51,41 @@ const Write = () => {
   const id = parseInt(id_arr[id_arr.length - 2]!);
 
   const session = useSession();
-  let userImage: React.ReactNode;
-
-  if (session.data?.user) {
-    userImage = <Avatar size="sm" src={session.data.user.image ?? ""} />;
-  } else {
-    userImage = <div>User Image</div>;
-  }
+  const [userImage, setUserImage] = useState<string | null>(null);
+  const { mutateAsync: fetchImage } = api.user.downloadFile.useMutation();
+  const {data: user} = api.user.fetchUser.useQuery({id: session.data?.user.id ?? ""}); 
 
   const router = useRouter();
+
+  useEffect(() => {
+    const fetchUserProfileImage = async () => {
+      if (user?.image_key) {
+        try {
+          const imageObject = await fetchImage({ key: user?.image_key });
+          if (imageObject) {
+            setUserImage(imageObject.link);
+          } else {
+            setUserImage(
+              "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg"
+            );
+          }
+        } catch (error) {
+          console.error('Error fetching user image:', error);
+          setUserImage(
+            "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg"
+          );
+        }
+      } else {
+        setUserImage(
+          "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg"
+        );
+      }
+    };
+
+    if (session.data?.user) {
+      void fetchUserProfileImage();
+    }
+  }, [session.data?.user, fetchImage]);
 
   const handleClick = () => {
     if (imageref.current) {
@@ -137,6 +168,7 @@ const Write = () => {
 
   return (
     <div>
+      {/* Header component */}
       <div className="flex justify-between gap-10 p-2">
         <div className="flex-start flex items-center mx-auto">
           <Link href="/homepage">
@@ -148,7 +180,7 @@ const Write = () => {
               height={40}
             />
           </Link>
-          <div className="text-sm">Draft in {session.data?.user.name}</div>
+          <div className="text-sm">Draft in {session.data?.user?.name}</div>
         </div>
         <div className="flex cursor-pointer items-center gap-1 px-2 text-sm font-light text-gray-500 sm:gap-7 mx-auto">
           <button
@@ -161,9 +193,13 @@ const Write = () => {
           <div className="hidden md:block">
             <IoMdNotificationsOutline className="cursor-pointer text-3xl" />
           </div>
-          <Popover placement="bottom">
+          <Popover placement="bottom" radius="none">
             <PopoverTrigger className="relative flex items-center">
-              {userImage}
+              {userImage ? (
+                <Avatar size="sm" src={userImage} />
+              ) : (
+                <div>User Image</div>
+              )}
             </PopoverTrigger>
             <PopoverContent>
               <div>
@@ -173,6 +209,7 @@ const Write = () => {
           </Popover>
         </div>
       </div>
+      {/* End of header component */}
 
       <section className="mx-auto w-[90%] py-[3rem] md:w-[80%] lg:w-[60%]">
         <input

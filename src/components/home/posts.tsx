@@ -2,34 +2,61 @@
 
 import Link from "next/link";
 import PostCard from "../PostCard";
-import { db } from "~/db";
 import Image from "next/image";
 import { api } from "~/trpc/react";
-import PostSkeleton from "../post/post-skeleton";
 import TopicBar from "./topic_scroll";
-import { useState } from "react";
-import TopicSkeletion from "../post/topic-skeleton";
-import StaffPickSkeleton from "../post/staff-pick-skeleton";
+import { useEffect, useState } from "react";
 import DashboardLoading from "../post/dashboard-loading";
 
 export function Posts() {
   const { data: allPosts, isLoading } = api.dashboard.fetchAllPosts.useQuery();
-  const [tag, setTag] = useState("");
-  const staffPickedPosts = allPosts?.slice(0, 3);
+  const { mutateAsync: fetchImage } = api.user.downloadFile.useMutation();
+
+  const [authorImages, setAuthorImages] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    const fetchAuthorImages = async () => {
+      if (allPosts) {
+        const newAuthorImages: Record<string, string> = {};
+
+        const fetchImages = allPosts.map(async (article) => {
+          if (article.createdBy.image_key) {
+            try {
+              const imageObject = await fetchImage({ key: article.createdBy.image_key });
+              newAuthorImages[article.createdBy.id] = imageObject?.link ?? "";
+            } catch (error) {
+              console.error('Error fetching image:', error);
+              newAuthorImages[article.createdBy.id] =
+                "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg";
+            }
+          } else {
+            newAuthorImages[article.createdBy.id] =
+              "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg";
+          }
+        });
+
+        await Promise.all(fetchImages);
+        setAuthorImages(newAuthorImages);
+      }
+    };
+
+    void fetchAuthorImages();
+  }, [allPosts, fetchImage]);
+
   const renderedPosts = allPosts?.map((article) => {
-    console.log(new Date(article.createdAt).toLocaleString());
+    const authorImage =
+      authorImages[article.createdBy.id] ?? article.createdBy.image ?? 
+      "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg";
+
     return (
       <Link key={article.id} href={"/posts/" + article.id}>
         <PostCard
           key={article.id}
-          authorName={article.name}
+          authorName={article.createdBy.username ?? article.name}
           previewTitle={article.previewTitle}
           previewSubtitle={article.previewSubtitle}
           tags={article.topics.map((topic) => topic.topic.name)}
-          userImage={
-            article.createdBy.image ??
-            "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg"
-          }
+          userImage={authorImage}
           image_link={article.key ?? ""}
           createdAt={article.createdAt}
           like={article.like ?? 0}
@@ -51,7 +78,12 @@ export function Posts() {
     );
   });
 
+  const staffPickedPosts = allPosts?.slice(0, 3);
   const renderedStaffPickedPosts = staffPickedPosts?.map((post) => {
+    const authorImage =
+      authorImages[post.createdBy.id] ?? 
+      "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg";
+
     return (
       <Link href={"/posts/" + post.id} key={post.id}>
         <div className="flex flex-col gap-2">
@@ -59,10 +91,7 @@ export function Posts() {
             <div className="grid h-[1.4rem] w-[1.4rem] place-items-center overflow-hidden rounded-full">
               <Image
                 alt="postcard"
-                src={
-                  post.createdBy.image ??
-                  "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg"
-                }
+                src={authorImage}
                 className="object-cover"
                 width={80}
                 height={80}
@@ -77,9 +106,7 @@ export function Posts() {
   });
 
   if (isLoading) {
-    return (
-      <DashboardLoading /> 
-    ); 
+    return <DashboardLoading />;
   }
 
   return (
@@ -107,23 +134,15 @@ export function Posts() {
             <div className="sticky top-4 mx-auto hidden h-[calc(100vh-4rem)] w-[30%] overflow-y-auto border-l-small md:block">
               <div className="mx-7 max-w-md">
                 <div className="py-2">
-                  <h1 className="text-md mb-3 font-sans font-medium">
-                    Staff Pick
-                  </h1>
-                  <div className="my-6 flex flex-col gap-7 px-4">
-                    {renderedStaffPickedPosts}
-                  </div>
+                  <h1 className="text-md mb-3 font-sans font-medium">Staff Pick</h1>
+                  <div className="my-6 flex flex-col gap-7 px-4">{renderedStaffPickedPosts}</div>
                   <button className="px-4 text-sm text-green-600 hover:text-green-700">
                     See the full list
                   </button>
                 </div>
                 <div className="my-5 py-2">
-                  <h1 className="text-md font-sans font-medium">
-                    Recommended Topics
-                  </h1>
-                  <div className="my-3 w-[80%] px-6">
-                    {renderedRecommendedTopics}
-                  </div>
+                  <h1 className="text-md font-sans font-medium">Recommended Topics</h1>
+                  <div className="my-3 w-[80%] px-6">{renderedRecommendedTopics}</div>
                   <button className="px-4 text-sm text-green-600 hover:text-green-700">
                     See more topics
                   </button>

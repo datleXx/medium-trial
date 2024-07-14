@@ -4,7 +4,6 @@ import { notFound } from "next/navigation";
 import { Avatar } from "@nextui-org/react";
 import { Popover, PopoverTrigger, PopoverContent } from "@nextui-org/react";
 import Image from "next/image";
-import Logo from "public/static/author.jpg";
 import HomeHeader from "~/components/home/header_home";
 import ProfilePostCardOptions from "~/components/Profile/postcard/profile-post-option";
 import { api } from "~/trpc/react";
@@ -16,7 +15,6 @@ import { GoPlay } from "react-icons/go";
 import { IoShareOutline } from "react-icons/io5";
 import { HiDotsHorizontal } from "react-icons/hi";
 import { Tooltip } from "react-tooltip";
-import DropDownMenu from "~/components/home/dropdown";
 import PopoverTriggerWrapper from "~/components/home/popover-wrapper";
 import ResponseTab from "~/components/post/response";
 import AuthorInfo from "~/components/post/author-other-posts";
@@ -33,16 +31,18 @@ export default function PostShowPage(props: PostShowPageProps) {
   const id = parseInt(props.params.id);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [isResponseTabOpen, setIsResponseTabOpen] = useState(false);
-  const [clap, setClap] = useState<number>(0); 
+  const [clap, setClap] = useState<number>(0);
   const [numComment, setNumComment] = useState<number>(0);
-
-
 
   const openResponseTab = () => setIsResponseTabOpen(true);
   const closeResponseTab = () => setIsResponseTabOpen(false);
 
   // Use the query hook to fetch the post data
-  const { data: post, isLoading, isError } = api.post.fetchOnePost.useQuery({ id });
+  const {
+    data: post,
+    isLoading,
+    isError,
+  } = api.post.fetchOnePost.useQuery({ id });
   const dateString = String(post?.createdAt);
   const dateParts = dateString.split(" ");
   const monthDay = `${dateParts[1]} ${dateParts[2]},${dateParts[3]}`;
@@ -147,7 +147,7 @@ export default function PostShowPage(props: PostShowPageProps) {
           <div className="flex items-center justify-between border-b border-t py-3">
             <div className="flex gap-6">
               <div
-                className="flex items-center gap-1 cursor-pointer"
+                className="flex cursor-pointer items-center gap-1"
                 data-tooltip-id="blog-tooltip"
                 data-tooltip-content="Clap"
                 onClick={handleClapClick}
@@ -185,7 +185,10 @@ export default function PostShowPage(props: PostShowPageProps) {
                     <PopoverTriggerWrapper />
                   </PopoverTrigger>
                   <PopoverContent>
-                    <DropDownMenu />
+                    <ProfilePostCardOptions
+                      id={parseInt(props.params.id)}
+                      key={post.key}
+                    />
                   </PopoverContent>
                 </Popover>
               </div>

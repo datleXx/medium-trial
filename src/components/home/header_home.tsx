@@ -20,21 +20,49 @@ import {
 } from "@nextui-org/react";
 import { useSession } from "next-auth/react";
 import { AiOutlineSearch } from "react-icons/ai";
+import { api } from "~/trpc/react";
 
 const HomeHeader = () => {
   const { publishState, setPublishState } = Blog();
   const session = useSession();
   const [scrollY, setScrollY] = useState(0);
   const [hideHeader, setHideHeader] = useState(false);
+  const [userImage, setUserImage] = useState<string | null>(null);
   const router = useRouter();
+  const { mutateAsync: fetchImage } = api.user.downloadFile.useMutation();
+  const { data: user } = api.user.fetchUser.useQuery({
+    id: session.data?.user.id ?? "",
+  });
 
-  let userImage: React.ReactNode;
+  useEffect(() => {
+    const fetchUserProfileImage = async () => {
+      if (user?.image_key) {
+        try {
+          const imageObject = await fetchImage({ key: user.image_key });
+          if (imageObject) {
+            setUserImage(imageObject.link);
+          } else {
+            setUserImage(
+              "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg",
+            );
+          }
+        } catch (error) {
+          console.error("Error fetching user image:", error);
+          setUserImage(
+            "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg",
+          );
+        }
+      } else {
+        setUserImage(
+          "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg",
+        );
+      }
+    };
 
-  if (session.data?.user) {
-    userImage = <Avatar size="sm" src={session.data.user.image ?? ""} />;
-  } else {
-    userImage = <div>User Image</div>;
-  }
+    if (session.data?.user) {
+      void fetchUserProfileImage();
+    }
+  }, [session.data?.user, fetchImage]);
 
   const handleScroll = () => {
     if (typeof window !== "undefined") {
@@ -94,7 +122,7 @@ const HomeHeader = () => {
               </form>
             </div>
           </div>
-          <div className="flex items-center gap-7 mr-5">
+          <div className="mr-5 flex items-center gap-7">
             {publishState === "edit" ? (
               <button
                 onClick={() => setPublishState("edit")}
@@ -119,7 +147,13 @@ const HomeHeader = () => {
             </div>
             <Popover placement="bottom">
               <PopoverTrigger className="relative flex items-center">
-                {userImage}
+                <Avatar
+                  size="sm"
+                  src={
+                    userImage ??
+                    "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg"
+                  }
+                />
               </PopoverTrigger>
               <PopoverContent>
                 <div>
